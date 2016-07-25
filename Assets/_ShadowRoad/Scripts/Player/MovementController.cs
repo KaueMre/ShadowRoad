@@ -2,25 +2,19 @@
 using System.Collections;
 using System;
 
-[RequireComponent(typeof(Rigidbody2D),(typeof(Animator)))]
-public class MovementController : MonoBehaviour
+public class PlayerController : MonoBehaviour 
 {
-    #region private variables
+
     private Rigidbody2D playerRB;
     private float horinzontalInput;
     private float verticalInput;
     private Animator playerAnimator;
-    private bool lookingLeft = false;
-    #endregion
 
-    #region actions/events/delegates
     public Action OnMovementEvent;
     public Action OnAtackEvent;
     public Action OnStopAtackEvent;
     public Action OnIdleEvent;
-    #endregion
 
-    #region public properties
     public Animator GetAnimator
     {
         get
@@ -28,15 +22,11 @@ public class MovementController : MonoBehaviour
             return playerAnimator;
         }
     }
-    #endregion
 
-    #region serizable variables
-    [SerializeField]
-    [Header("Variables for player controller")]
-    private float speed;
-    #endregion
+    [SerializeField] private float speed;
+   
 
-    #region Unity events
+    
     private void Awake()
     {
         playerRB = GetComponent<Rigidbody2D>();
@@ -48,11 +38,10 @@ public class MovementController : MonoBehaviour
         CheckInput();
         CheckMovement();
         CheckAtack();
-        CheckSideToFlip();
-    }
-    #endregion
 
-    #region private methods
+
+    }
+
     private void CheckInput()
     {
         horinzontalInput = Input.GetAxisRaw("Horizontal");
@@ -69,6 +58,7 @@ public class MovementController : MonoBehaviour
 
         else
             DispatchIdleEvent();
+
     }
 
     private void CheckAtack()
@@ -78,34 +68,17 @@ public class MovementController : MonoBehaviour
             DispatchAtackEvent();
             Debug.Log("Atacando");
         }
-
+            
         if (Input.GetMouseButtonUp(1))
         {
             DispatchStopAtackEvent();
             Debug.Log("Parou");
         }
+    
     }
 
-    private void CheckSideToFlip()
-    {
-        if (horinzontalInput > 0 && lookingLeft == true)
-            FlipSprite();
+    //Dispatchers
 
-        if (horinzontalInput < 0 && lookingLeft == false)
-            FlipSprite();
-    }
-
-
-    private void FlipSprite()
-    {
-        lookingLeft = !lookingLeft;
-        Vector2 spriteScale = transform.localScale;
-        spriteScale.x *= -1.0f;
-        transform.localScale = spriteScale;
-    }
-    #endregion
-
-    #region Dispatchers
     private void DispatchMovementEvent()
     {
         if (OnMovementEvent != null)
@@ -129,7 +102,6 @@ public class MovementController : MonoBehaviour
         if (OnStopAtackEvent != null)
             OnStopAtackEvent();
     }
-    #endregion
+
+
 }
-
-
